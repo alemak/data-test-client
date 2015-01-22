@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!-- which Product Data Access Implementation to instantiate -->
+
+<bean id="productDataAccess" class="com.netaporter.test.client.product.impl.HybridProductDataAccess">
+    <property name="apiClientFacade">
+        <bean id = "apiClientFacade" class="com.netaporter.productservice.api.APIClientUtils.APIClientFacade">
+                <property name="restClient">
+                     <bean id="restClient" class="com.netaporter.productservice.api.ApiClient" init-method="init">
+                            <property name="baseUri" value="http://lad-likelive.dave.net-a-porter.com:80/"/>
+                    </bean>
+                </property>
+        </bean>
+    </property>
+ </bean>
+        <!-- Solr config-->
+ <!--<bean id="solrClient" class="com.netaporter.productservice.solr.client.SolrClient"/>    -->
+ <bean id="singleChannelSolrProductSearch" class="com.netaporter.productservice.solr.client.singlechannel.SingleChannelSolrProductSearch" />
+ <bean id="crossChannelSolrProductSearch" class="com.netaporter.productservice.solr.client.crosschannel.CrossChannelSolrProductSearch" />
+ <context:property-placeholder location="naplabs.properties"/>
+
+        <!-- the legacy DB client config -->
+<bean id="dbClientINTL" class="com.netaporter.test.utils.dataaccess.database.LegacyWebAppChannelisedDatabaseClient">
+<constructor-arg value="INTL"/>
+</bean>
+<bean id="dbClientAM" class="com.netaporter.test.utils.dataaccess.database.LegacyWebAppChannelisedDatabaseClient">
+<constructor-arg value="AM"/>
+</bean>
+<bean id="dbClientAPAC" class="com.netaporter.test.utils.dataaccess.database.LegacyWebAppChannelisedDatabaseClient">
+<constructor-arg value="APAC"/>
+</bean>
+
+
+
+        <!-- where the spring components live in product-data-test-client -->
+<context:component-scan base-package="com.netaporter.productservice.api" />
+<context:component-scan base-package="com.netaporter.productservice.solr.client" />
+<context:component-scan base-package="com.netaporter.test.utils.dataaccess.database" />
+</beans>

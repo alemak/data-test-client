@@ -1,0 +1,39 @@
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "maven"
+
+group = "com.netaporter"
+project.version = "$version"
+
+sourceCompatibility = 1.7
+
+repositories {
+    maven {
+        url "http://artifactory.dave.net-a-porter.com:8081/artifactory/repo"
+    }
+}
+
+description = "Product Data Test Client"
+
+dependencies {
+
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.15'
+    compile(group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.14')
+    compile (group:'org.json', name: 'json', version: '20140107')
+    compile (group: 'org.jsoup', name:'jsoup', version: '1.7.3')
+
+    //testingutils
+    compile group: 'com.netaporter', name: 'testingutils', version: '2.2.0', changing: true
+
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+
